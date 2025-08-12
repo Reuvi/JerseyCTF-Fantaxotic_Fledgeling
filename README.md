@@ -1,102 +1,123 @@
-# JerseyCTF V — Fantaxotic Fledgeling
+# JerseyCTF — Fantaxotic Fledgeling
 
 **Category:** Binary Exploitation
-**Difficulty:** Medium (dynamic scoring)
-**Event:** JerseyCTF V (Mar 29–30, 2025)
-**Author:** Reuvi (Challenge writer)
+**Difficulty:** Medium
+**Event:** JerseyCTF (Jeopardy-style)
+**Author:** Reuvi (Challenge Writer)
 
-**Fantaxotic Fledgeling** is a pwn challenge written for **JerseyCTF V**. It ships with the original C source, a prebuilt binary, author notes/design doc, and a reference exploit script. On the event scoreboard it appeared under **Binary Exploitation** with a medium rating and \~965 dynamic points. ([ctf.jerseyctf.com][1])
-
----
-
-## Repo contents
-
-* `fantaxotic_fledgling.c` — challenge source (C)
-* `fantaxotic_fledgling` — prebuilt binary
-* `Makefile` — local build rules
-* `fantaxotic_fledgling.tar.gz` — ready-to-deploy challenge bundle
-* `Challenge Design.pdf` — author design notes (theory, goals, constraints)
-* `notes.txt` — quick author notes
-* `solve.py` — reference exploit (pwntools)
-  Files are listed on the repository landing page. ([GitHub][2])
+**Fantaxotic Fledgeling** is a pwn challenge authored for JerseyCTF. The repo includes the challenge source/binary and a reference solve to help competitors (or instructors) re-host and practice the exploit path.
 
 ---
 
-## Build (local)
+## 🗂 Repo Contents
 
-Requirements: a POSIX-like environment with **gcc** and **make**.
+> Filenames may vary slightly; check the repo root for exact names.
+
+* `fantaxotic_fledgling.c` – C source of the challenge
+* `fantaxotic_fledgling` – compiled binary (for local testing)
+* `Makefile` – convenience build rules (if provided)
+* `solve.py` – reference exploit using pwntools (if provided)
+* `notes.txt` / `Challenge Design.pdf` – author notes, intended path, constraints
+* `fantaxotic_fledgling.tar.gz` – deployable artifact for CTF infra (if provided)
+
+---
+
+## 🔧 Build (Local)
+
+Requirements: a Linux-like environment with **gcc** and **make**.
 
 ```bash
 git clone https://github.com/Reuvi/JerseyCTF-Fantaxotic_Fledgeling
 cd JerseyCTF-Fantaxotic_Fledgeling
-make           # builds ./fantaxotic_fledgling from the C source
+
+# Preferred:
+make
+
+# If no Makefile is present, try a basic build:
+gcc -o fantaxotic_fledgling fantaxotic_fledgling.c
+# (If the challenge requires specific flags, see notes/Makefile in the repo.)
 ```
 
-Run locally:
+---
+
+## ▶️ Run (Local)
+
+Run the binary directly:
 
 ```bash
 ./fantaxotic_fledgling
 ```
 
-> If you need a network service for local testing, one simple option is:
->
-> ```bash
-> socat -T 60 TCP-LISTEN:1337,reuseaddr,fork EXEC:./fantaxotic_fledgling
-> ```
->
-> Then connect with `nc 127.0.0.1 1337`.
-
----
-
-## Deploy (CTF infra)
-
-You can use the included **`fantaxotic_fledgling.tar.gz`** as the challenge artifact for your infrastructure. Typical approaches:
-
-* **xinetd/systemd socket/socat** service wrapping the binary.
-* Containerize with your event’s base image and expose the port used above.
-
-The repository does not include a Dockerfile—infra specifics are left to the hosting platform.
-
----
-
-## Solving (reference)
-
-A **reference exploit** is provided in `solve.py` (pwntools). Typical usage:
+Expose it as a TCP service for testing:
 
 ```bash
-python3 -m pip install pwntools
-# Local (example):
+# Listen on port 1337 and fork for each connection
+socat -T 60 TCP-LISTEN:1337,reuseaddr,fork EXEC:./fantaxotic_fledgling
+# In another terminal:
+nc 127.0.0.1 1337
+```
+
+---
+
+## 🚀 Deploy (CTF Infra)
+
+Common options (pick what your infra supports):
+
+* **xinetd / systemd socket / socat** wrapping the binary
+* **Containerized** service (Docker) exposing a TCP port
+* Use the included `fantaxotic_fledgling.tar.gz` if present as the challenge artifact
+
+**Notes:**
+
+* Disable core dumps, set resource limits as needed
+* Run as an unprivileged user in a locked-down working directory
+* If ASLR/PIE/RELRO/SSP settings matter to the intended path, configure the host/container accordingly
+
+---
+
+## 🧪 Solving (Reference)
+
+If `solve.py` is provided (pwntools):
+
+```bash
+python3 -m pip install --upgrade pwntools
+# Local example:
 python3 solve.py
-# Remote (if the script supports args):
+# Or, if the script supports args:
 python3 solve.py HOST PORT
 ```
 
-If the script doesn’t take CLI args, set host/port constants at the top of `solve.py` and re-run.
+If the script uses constants, edit `HOST`/`PORT` at the top of `solve.py` and re-run.
 
-> The intended path and constraints are discussed in **Challenge Design.pdf** and `notes.txt`. See those documents for the exact vulnerability model and guard rails used during the competition (stack layout, mitigations, and any “ret2win/ROP” style targets). ([GitHub][3])
-
----
-
-## Flag format
-
-JerseyCTF flags typically follow the form **`jctf{...}`**. Confirm with the event’s rules if you’re hosting a mirror or re-running the challenge. ([Inv1nc’s blog][4])
+The intended vulnerability/technique is discussed in the **design notes**; read those for the exact constraints, memory layout, and mitigation assumptions.
 
 ---
 
-## Attribution
+## 🏁 Flag Format
 
-* **Author/Challenge Writer:** Reuvi
-* **Event:** JerseyCTF V (hosted by NJIT orgs; Jeopardy-style) ([ctftime.org][5], [jerseyctf.com][6])
+Typical JerseyCTF flags look like:
+
+```
+jctf{...}
+```
+
+(Confirm your event’s exact format if you are re-hosting.)
 
 ---
 
-## Educational use
+## 📚 Educational Use
 
-This repository is provided for learning and re-hosting in CTF practice environments. Please credit the author and event if you reuse or adapt the challenge.
+This repository is provided for learning and re-hosting in CTF practice environments. If you reuse or adapt the challenge, please credit the author and the event.
 
-[1]: https://ctf.jerseyctf.com/challenges?utm_source=chatgpt.com "Challenges"
-[2]: https://github.com/Reuvi/JerseyCTF-Fantaxotic_Fledgeling "GitHub - Reuvi/JerseyCTF-Fantaxotic_Fledgeling"
-[3]: https://github.com/Reuvi/JerseyCTF-Fantaxotic_Fledgeling/blob/main/Challenge%20Design.pdf "JerseyCTF-Fantaxotic_Fledgeling/Challenge Design.pdf at main · Reuvi/JerseyCTF-Fantaxotic_Fledgeling · GitHub"
-[4]: https://inv1nc.github.io/jerseyctf-2024-writeup?utm_source=chatgpt.com "JerseyCTF IV Writeup"
-[5]: https://ctftime.org/event/2667/?utm_source=chatgpt.com "JerseyCTF V"
-[6]: https://www.jerseyctf.com/?utm_source=chatgpt.com "JerseyCTF"
+---
+
+## 📄 License
+
+See `LICENSE` if present; otherwise contact the author for permissions.
+
+---
+
+## ✍️ Attribution
+
+**Challenge Writer:** Reuvi
+**Event:** JerseyCTF (Binary Exploitation)
