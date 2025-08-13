@@ -111,12 +111,6 @@ This repository is provided for learning and re-hosting in CTF practice environm
 
 ---
 
-## 📄 License
-
-See `LICENSE` if present; otherwise contact the author for permissions.
-
----
-
 ## ✍️ Attribution
 
 **Challenge Writer:** Reuvi
