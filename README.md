@@ -9,20 +9,7 @@
 
 ---
 
-## 🗂 Repo Contents
-
-> Filenames may vary slightly; check the repo root for exact names.
-
-* `fantaxotic_fledgling.c` – C source of the challenge
-* `fantaxotic_fledgling` – compiled binary (for local testing)
-* `Makefile` – convenience build rules (if provided)
-* `solve.py` – reference exploit using pwntools (if provided)
-* `notes.txt` / `Challenge Design.pdf` – author notes, intended path, constraints
-* `fantaxotic_fledgling.tar.gz` – deployable artifact for CTF infra (if provided)
-
----
-
-## 🔧 Build (Local)
+## Build (Local)
 
 Requirements: a Linux-like environment with **gcc** and **make**.
 
@@ -30,17 +17,12 @@ Requirements: a Linux-like environment with **gcc** and **make**.
 git clone https://github.com/Reuvi/JerseyCTF-Fantaxotic_Fledgeling
 cd JerseyCTF-Fantaxotic_Fledgeling
 
-# Preferred:
 make
-
-# If no Makefile is present, try a basic build:
-gcc -o fantaxotic_fledgling fantaxotic_fledgling.c
-# (If the challenge requires specific flags, see notes/Makefile in the repo.)
 ```
 
 ---
 
-## ▶️ Run (Local)
+## Run
 
 Run the binary directly:
 
@@ -48,7 +30,7 @@ Run the binary directly:
 ./fantaxotic_fledgling
 ```
 
-Expose it as a TCP service for testing:
+Expose it as a TCP service to simulate the remote challenge:
 
 ```bash
 # Listen on port 1337 and fork for each connection
@@ -59,41 +41,16 @@ nc 127.0.0.1 1337
 
 ---
 
-## 🚀 Deploy (CTF Infra)
-
-Common options (pick what your infra supports):
-
-* **xinetd / systemd socket / socat** wrapping the binary
-* **Containerized** service (Docker) exposing a TCP port
-* Use the included `fantaxotic_fledgling.tar.gz` if present as the challenge artifact
-
-**Notes:**
-
-* Disable core dumps, set resource limits as needed
-* Run as an unprivileged user in a locked-down working directory
-* If ASLR/PIE/RELRO/SSP settings matter to the intended path, configure the host/container accordingly
-
----
-
-## 🧪 Solving (Reference)
-
-If `solve.py` is provided (pwntools):
+## Solving
 
 ```bash
 python3 -m pip install --upgrade pwntools
 # Local example:
 python3 solve.py
-# Or, if the script supports args:
+# Or
 python3 solve.py HOST PORT
 ```
-
-If the script uses constants, edit `HOST`/`PORT` at the top of `solve.py` and re-run.
-
-The intended vulnerability/technique is discussed in the **design notes**; read those for the exact constraints, memory layout, and mitigation assumptions.
-
----
-
-## 🏁 Flag Format
+## Flag Format
 
 Typical JerseyCTF flags look like:
 
@@ -101,17 +58,13 @@ Typical JerseyCTF flags look like:
 jctf{...}
 ```
 
-(Confirm your event’s exact format if you are re-hosting.)
-
----
-
-## 📚 Educational Use
+## Educational Use
 
 This repository is provided for learning and re-hosting in CTF practice environments. If you reuse or adapt the challenge, please credit the author and the event.
 
 ---
 
-## ✍️ Attribution
+##  Attribution
 
 **Challenge Writer:** Reuvi
 **Event:** JerseyCTF (Binary Exploitation)
